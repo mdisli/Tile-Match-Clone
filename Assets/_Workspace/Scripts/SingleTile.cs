@@ -41,7 +41,10 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
 
     public void DestroyTile()
     {
-        transform.DOScale(Vector3.zero, .15f).SetEase(Ease.Linear).OnComplete(() => Destroy(gameObject));
+        transform.DOScale(Vector3.zero, .25f)
+            .SetEase(Ease.InQuart)
+            .SetDelay(.3f)
+            .OnComplete(() => Destroy(gameObject));
     }
 
     public void SetPlaceId(int newId)

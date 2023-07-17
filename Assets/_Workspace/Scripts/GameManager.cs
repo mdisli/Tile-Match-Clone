@@ -59,6 +59,7 @@ namespace _Workspace.Scripts
             if (instance == null)
             {
                 instance = this;
+                Application.targetFrameRate = 60;
                 DontDestroyOnLoad(gameObject);
             }
             else

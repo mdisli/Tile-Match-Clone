@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -20,12 +21,10 @@ public class TileHolder : MonoBehaviour
             var x = placedTilesList.Where((tile) => tile.imageId == id).ToList();
             var newId = x[^1].PlaceId + 1;
             
-            placedTilesList.Where(tile => tile.PlaceId >= newId).ToList().ForEach(tile =>
-            {
-                tile.SetPlaceId(tile.PlaceId+1);
-            });
+            SwipeTiles(newId);
 
-            RePlaceTiles();
+            //await Task.Delay(150);
+            
             var refPosition = referencePlacesList[newId].anchoredPosition;
             return new Vector3(refPosition.x, refPosition.y, newId);
 
@@ -40,12 +39,15 @@ public class TileHolder : MonoBehaviour
 
     private Dictionary<int, int> _placedTileIdDictionary = new Dictionary<int, int>();
 
-    public void PlaceTile(SingleTile tile)
+    public  void PlaceTile(SingleTile tile)
     {
         tile.isPlaced = true;
         
         var refPos = GetEmptyReferenceAnchorPosition(tile.imageId);
-        tile._rectTransform.DOAnchorPos(new Vector2(refPos.x,refPos.y), .25f);
+        
+
+        tile._rectTransform.DOAnchorPos(new Vector2(refPos.x, refPos.y), .25f);
+
         placedTilesList.Add(tile);
 
         if (_placedTileIdDictionary.ContainsKey(tile.imageId))
@@ -70,11 +72,24 @@ public class TileHolder : MonoBehaviour
         {
             if (dict.Value >= 3)
             {
-                // tilesToRemove listesine ekleyin
                 tilesToRemove.AddRange(placedTilesList.Where(tile => tile.imageId == dict.Key));
             }
         }
 
+        if (tilesToRemove.Count > 0)
+            StartCoroutine(PopTiles(tilesToRemove));
+        
+
+        //TODO Game Over
+        if (placedTilesList.Count >= MaxTileCount)
+        {
+            // ...
+        }
+        
+    }
+
+    private IEnumerator PopTiles(List<SingleTile> tilesToRemove)
+    {
         foreach (var tile in tilesToRemove)
         {
             placedTilesList.Remove(tile);
@@ -84,15 +99,10 @@ public class TileHolder : MonoBehaviour
                 _placedTileIdDictionary.Remove(tile.imageId);
             tile.DestroyTile();
         }
-        
-        if(tilesToRemove.Count > 1)
-            ReorderTiles();
 
-        //TODO Game Over
-        if (placedTilesList.Count >= MaxTileCount)
-        {
-            // ...
-        }
+        yield return new WaitForSeconds(.45f);
+        
+        ReorderTiles();
         
     }
 
@@ -108,15 +118,28 @@ public class TileHolder : MonoBehaviour
             placedTilesList[i].SetPlaceId(i);
         }
         
-        RePlaceTiles();
+        RePlaceTiles(delay:.1f);
     }
 
-    private void RePlaceTiles()
+    private void RePlaceTiles(float duration = .2f, float delay=0f)
     {
-        
+        int i = 0;
         foreach (var tile in placedTilesList)
         {
-            tile._rectTransform.DOAnchorPos(referencePlacesList[tile.PlaceId].anchoredPosition, .2f);
+            tile._rectTransform.DOAnchorPos(referencePlacesList[tile.PlaceId].anchoredPosition, duration)
+                .SetDelay(i * delay);
+
+            i++;
         }
+    }
+
+    private void SwipeTiles(int startIndex)
+    {
+        placedTilesList.Where(tile => tile.PlaceId >= startIndex).ToList().ForEach(tile =>
+        {
+            tile.SetPlaceId(tile.PlaceId+1);
+        });
+
+        RePlaceTiles(.25f,0);
     }
 }
