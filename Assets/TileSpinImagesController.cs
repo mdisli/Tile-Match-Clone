@@ -8,14 +8,19 @@ public class TileSpinImagesController : MonoBehaviour
 {
     [SerializeField] private List<RectTransform> spinImagesList = new List<RectTransform>();
     [SerializeField] private RectTransform imageHolder;
+
+    private SingleTile _singleTile;
     
     private float _tileSize = 120;
     private int TileCount => spinImagesList.Count;
 
+    private int imageId;
 
     private void Awake()
     {
         _tileSize = spinImagesList[0].rect.width;
+        _singleTile = GetComponentInParent<SingleTile>();
+        imageId = _singleTile.imageId;
     }
 
     private void Start()
@@ -38,10 +43,10 @@ public class TileSpinImagesController : MonoBehaviour
     private Sequence SlowImageChooseSequence()
     {
         Sequence seq = DOTween.Sequence();
-
-        int randomNum = Random.Range(0, TileCount-1);
         
-        transform.GetChild(0).GetChild(randomNum).SetSiblingIndex(TileCount - 1);
+        HideSpinImages();
+        
+        transform.GetChild(imageId).SetSiblingIndex(TileCount - 1);
 
         seq.Join(FastImageChooseTween(.15f))
             .Append(FastImageChooseTween(.25f))

@@ -3,20 +3,18 @@ using DG.Tweening;
 using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 public class SingleTile : MonoBehaviour, IPointerDownHandler
 {
     #region Variables
     
+    public int imageId;
     [SerializeField] private TileSpinImagesController tileSpinner;
-
-    private TileHolder _activeTileHolder;
-    private RectTransform _rectTransform;
+    [HideInInspector] public RectTransform _rectTransform;
+    [HideInInspector] public bool isPlaced;
+    [HideInInspector] public int placeId;
     
-    [SerializeField] private int imageId;
-
+    private TileHolder _activeTileHolder;
     #endregion
 
     #region Unity Funcs
@@ -30,14 +28,19 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
     
     public void OnPointerDown(PointerEventData eventData)
     {
-        var refPos = _activeTileHolder.GetEmptyReferenceAnchorPosition;
-        _rectTransform.DOAnchorPos(refPos, .25f);
-        _activeTileHolder.placedTilesList.Add(this);
+        if(isPlaced) return;
+        isPlaced = true;
+        
+        _activeTileHolder.PlaceTile(this);
 
     }
 
     #endregion
 
+    public void DestroyTile()
+    {
+        transform.DOScale(Vector3.zero, .15f).SetEase(Ease.Linear).OnComplete(() => Destroy(gameObject));
+    }
 
     [Button]
     public void ShowSelectedImage()
