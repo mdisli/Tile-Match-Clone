@@ -1064,6 +1064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelStartButton: {fileID: 46397390}
+  levelTxt: {fileID: 2011749485}
   coinInfoBar: {fileID: 962415490}
   healthInfoBar: {fileID: 881665044}
 --- !u!1 &2011749483

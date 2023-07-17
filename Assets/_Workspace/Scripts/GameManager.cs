@@ -19,6 +19,7 @@ namespace _Workspace.Scripts
 
         private const string CoinPrefsKey = "CoinCount";
         private const string HealthPrefsKey = "HealthCount";
+        private const string LevelPrefsKey = "Level";
 
         private int _coinAmount
         {
@@ -36,6 +37,15 @@ namespace _Workspace.Scripts
             {
                 PlayerPrefs.SetInt(HealthPrefsKey,value);
                 OnHealthCountChanged?.Invoke();
+            }
+        }
+
+        private int _level
+        {
+            get => PlayerPrefs.GetInt(LevelPrefsKey, 1);
+            set
+            {
+                PlayerPrefs.SetInt(LevelPrefsKey,value);
             }
         }
         
@@ -74,6 +84,16 @@ namespace _Workspace.Scripts
         public int HealthAmount => _healthAmount;
 
         #endregion
-        
+
+        #region Set & Get Level
+
+        public int Level => _level;
+
+        public void IncreaseLevel()
+        {
+            _level++;
+        }
+
+        #endregion
     }
 }

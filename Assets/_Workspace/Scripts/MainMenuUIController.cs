@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class MainMenuUIController : MonoBehaviour
 {
     [SerializeField] private Button levelStartButton;
+    [SerializeField] private TextMeshProUGUI levelTxt;
     
     [SerializeField] private MainMenuInfoBar coinInfoBar;
     [SerializeField] private MainMenuInfoBar healthInfoBar;
@@ -29,5 +30,7 @@ public class MainMenuUIController : MonoBehaviour
     {
         coinInfoBar.UpdateAmountTxt(GameManager.instance.CoinAmount);
         healthInfoBar.UpdateAmountTxt(GameManager.instance.HealthAmount);
+        
+        levelTxt.SetText($"Level {GameManager.instance.Level}");
     }
 }
