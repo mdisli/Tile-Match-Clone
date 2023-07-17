@@ -9,7 +9,7 @@ public class TileHolder : MonoBehaviour
     private const int MaxTileCount = 7;
     [SerializeField] private List<RectTransform> referencePlacesList = new List<RectTransform>();
     
-    private List<SingleTile> placedTilesList = new List<SingleTile>();
+    public List<SingleTile> placedTilesList = new List<SingleTile>();
 
     private int PlacedTileCount => placedTilesList.Count;
 
@@ -18,12 +18,14 @@ public class TileHolder : MonoBehaviour
         if (_placedTileIdDictionary.ContainsKey(id))
         {
             var x = placedTilesList.Where((tile) => tile.imageId == id).ToList();
-            var newId = x[^1].placeId + 1;
+            var newId = x[^1].PlaceId + 1;
             
-            placedTilesList.Where(tile => tile.placeId >= newId).ToList().ForEach(tile => tile.placeId++);
-            
-            ReorderTiles();
+            placedTilesList.Where(tile => tile.PlaceId >= newId).ToList().ForEach(tile =>
+            {
+                tile.SetPlaceId(tile.PlaceId+1);
+            });
 
+            RePlaceTiles();
             var refPosition = referencePlacesList[newId].anchoredPosition;
             return new Vector3(refPosition.x, refPosition.y, newId);
 
@@ -55,50 +57,66 @@ public class TileHolder : MonoBehaviour
             _placedTileIdDictionary.Add(tile.imageId,1);
         }
 
-        tile.placeId = (int)refPos.z;
+        tile.SetPlaceId((int)refPos.z);
         
         CheckGameStatus();
     }
 
     private void CheckGameStatus()
     {
+        List<SingleTile> tilesToRemove = new List<SingleTile>();
+
         foreach (var dict in _placedTileIdDictionary)
         {
             if (dict.Value >= 3)
             {
-                // clear Items
-                var tilesList = placedTilesList.Where(tile => tile.imageId == dict.Key).ToList();
-
-                foreach (var tile in tilesList)
-                {
-                    placedTilesList.Remove(tile);
-                    _placedTileIdDictionary[tile.imageId]--;
-                    tile.DestroyTile();
-                }
-
-
-                int i = 0;
-                foreach (var placedTile in placedTilesList)
-                {
-                    placedTile.placeId = i;
-                    i++;
-                }
+                // tilesToRemove listesine ekleyin
+                tilesToRemove.AddRange(placedTilesList.Where(tile => tile.imageId == dict.Key));
             }
         }
+
+        foreach (var tile in tilesToRemove)
+        {
+            placedTilesList.Remove(tile);
+            _placedTileIdDictionary[tile.imageId]--;
+
+            if (_placedTileIdDictionary[tile.imageId] == 0)
+                _placedTileIdDictionary.Remove(tile.imageId);
+            tile.DestroyTile();
+        }
         
+        if(tilesToRemove.Count > 1)
+            ReorderTiles();
+
         //TODO Game Over
         if (placedTilesList.Count >= MaxTileCount)
         {
-            
+            // ...
         }
         
     }
 
+    private void ReOrderPlacedTilesByPlaceId()
+    {
+        placedTilesList = placedTilesList.OrderBy(x => x.PlaceId).ToList();
+    }
     private void ReorderTiles()
     {
+        ReOrderPlacedTilesByPlaceId();
+        for (int i = 0; i < placedTilesList.Count; i++)
+        {
+            placedTilesList[i].SetPlaceId(i);
+        }
+        
+        RePlaceTiles();
+    }
+
+    private void RePlaceTiles()
+    {
+        
         foreach (var tile in placedTilesList)
         {
-            tile._rectTransform.DOAnchorPos(referencePlacesList[tile.placeId].anchoredPosition, .2f);
+            tile._rectTransform.DOAnchorPos(referencePlacesList[tile.PlaceId].anchoredPosition, .2f);
         }
     }
 }

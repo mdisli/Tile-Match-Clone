@@ -11,8 +11,10 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
     public int imageId;
     [SerializeField] private TileSpinImagesController tileSpinner;
     [HideInInspector] public RectTransform _rectTransform;
-    [HideInInspector] public bool isPlaced;
-    [HideInInspector] public int placeId;
+    [HideInInspector]  public bool isPlaced;
+    
+    private int _placeId;
+    public int PlaceId => _placeId;
     
     private TileHolder _activeTileHolder;
     #endregion
@@ -40,6 +42,11 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
     public void DestroyTile()
     {
         transform.DOScale(Vector3.zero, .15f).SetEase(Ease.Linear).OnComplete(() => Destroy(gameObject));
+    }
+
+    public void SetPlaceId(int newId)
+    {
+        _placeId = newId;
     }
 
     [Button]
