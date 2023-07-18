@@ -1,18 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
+using _Workspace.Scripts;
+using NaughtyAttributes;
+using TMPro;
 using UnityEngine;
 
 public class GameSceneUIController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private WinUIController winUIController;
+    [SerializeField] private FailUIController failUIController;
+
+    private void Start()
     {
-        
+        UpdateLevelText();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void UpdateLevelText()
     {
-        
+        levelText.SetText($"Level {GameManager.instance.Level}");
+    }
+
+    [Button()]
+    public void OpenWinUI()
+    {
+        winUIController.OpenWinUI();
+    }
+
+    [Button()]
+    public void OpenFailUI()
+    {
+        failUIController.OpenFailUI();
     }
 }
