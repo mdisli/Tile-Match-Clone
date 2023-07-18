@@ -3,17 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace _Workspace.Scripts
 {
     public class TileHolder : MonoBehaviour
     {
         public static TileHolder instance;
-    
+
+        #region Unity Actions
+        public static event UnityAction OnGameFailed;
+        public static event UnityAction OnGameCompleted;
+
+        #endregion
+
+
+
+
+        #region Variables
+
         private const int MaxTileCount = 7;
         [SerializeField] private List<RectTransform> referencePlacesList = new List<RectTransform>();
         public List<SingleTile> placedTilesList = new List<SingleTile>();
         private int PlacedTileCount => placedTilesList.Count;
+        private int _poppedTileCount=0;
+        
+        private Dictionary<int, int> _placedTileIdDictionary = new Dictionary<int, int>();
+
+        #endregion
+
+        #region Unity Funcs
 
         private void Awake()
         {
@@ -22,6 +41,8 @@ namespace _Workspace.Scripts
             else 
                 Destroy(gameObject);
         }
+
+        #endregion
 
         private Vector3 GetEmptyReferenceAnchorPosition(int id)
         {
@@ -46,7 +67,7 @@ namespace _Workspace.Scripts
           
         } 
 
-        private Dictionary<int, int> _placedTileIdDictionary = new Dictionary<int, int>();
+        
 
         public  void PlaceTile(SingleTile tile)
         {
@@ -92,9 +113,9 @@ namespace _Workspace.Scripts
             //TODO Game Over
             if (placedTilesList.Count >= MaxTileCount)
             {
-                // ...
+                OnGameFailed?.Invoke();
             }
-        
+
         }
 
         private IEnumerator PopTiles(List<SingleTile> tilesToRemove)
@@ -107,6 +128,8 @@ namespace _Workspace.Scripts
                 if (_placedTileIdDictionary[tile.imageId] == 0)
                     _placedTileIdDictionary.Remove(tile.imageId);
                 tile.DestroyTile();
+
+                _poppedTileCount++;
             }
 
             yield return new WaitForSeconds(.45f);

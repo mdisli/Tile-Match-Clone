@@ -63,7 +63,6 @@ namespace _Workspace.Scripts
             {
                 instance = this;
                 Application.targetFrameRate = 60;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -71,6 +70,28 @@ namespace _Workspace.Scripts
             }
             
             SetGameStatus(GameStatus.WaitingToStart);
+        }
+
+        private void OnEnable()
+        {
+            TileHolder.OnGameCompleted += TileHolderOnOnGameCompleted;
+            TileHolder.OnGameFailed += TileHolderOnOnGameFailed;
+        }
+
+        private void OnDisable()
+        {
+            TileHolder.OnGameCompleted -= TileHolderOnOnGameCompleted;
+            TileHolder.OnGameFailed -= TileHolderOnOnGameFailed;
+        }
+
+        private void TileHolderOnOnGameFailed()
+        {
+            SetGameStatus(GameStatus.GameEnd);
+        }
+
+        private void TileHolderOnOnGameCompleted()
+        {
+            SetGameStatus(GameStatus.GameEnd);
         }
 
         #endregion
@@ -81,6 +102,18 @@ namespace _Workspace.Scripts
         public void IncreaseCoinCount(int value)
         {
             _coinAmount += value;
+        }
+        private bool CheckMoneyEnough(int amount)
+        {
+            if (CoinAmount >= amount)
+            {
+                IncreaseCoinCount(-amount);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         #endregion

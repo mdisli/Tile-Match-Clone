@@ -5,7 +5,7 @@ namespace _Workspace.Scripts
 {
     public class SingleTileGroupController : MonoBehaviour
     { 
-        [SerializeField] private List<SingleTile> allTilesList = new List<SingleTile>();
+        [SerializeField] public List<SingleTile> allTilesList = new List<SingleTile>();
         [SerializeField] private List<SingleTile> openTilesList = new List<SingleTile>();
 
         private int OpenedTileCount => openTilesList.Count;

@@ -1,3 +1,4 @@
+using System;
 using _Workspace.Scripts;
 using NaughtyAttributes;
 using TMPro;
@@ -14,12 +15,33 @@ public class GameSceneUIController : MonoBehaviour
         UpdateLevelText();
     }
 
+    private void OnEnable()
+    {
+        TileHolder.OnGameFailed += TileHolderOnOnGameFailed;
+        TileHolder.OnGameCompleted += TileHolderOnOnGameCompleted;
+    }
+
+    private void OnDisable()
+    {
+        TileHolder.OnGameFailed -= TileHolderOnOnGameFailed;
+        TileHolder.OnGameCompleted -= TileHolderOnOnGameCompleted;
+    }
+
+    private void TileHolderOnOnGameFailed()
+    {
+        OpenFailUI();
+    }
+    
+    private void TileHolderOnOnGameCompleted()
+    {
+        OpenFailUI();
+    }
+
     private void UpdateLevelText()
     {
         levelText.SetText($"Level {GameManager.instance.Level}");
     }
-
-    [Button()]
+    
     public void OpenWinUI()
     {
         winUIController.OpenWinUI();
