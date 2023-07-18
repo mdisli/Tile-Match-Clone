@@ -48,7 +48,10 @@ namespace _Workspace.Scripts
                 PlayerPrefs.SetInt(LevelPrefsKey,value);
             }
         }
-        
+
+
+        private GameStatus _gameStatus;
+        public GameStatus ActiveGameStatus => _gameStatus;
 
         #endregion
 
@@ -66,6 +69,8 @@ namespace _Workspace.Scripts
             {
                 Destroy(gameObject);
             }
+            
+            SetGameStatus(GameStatus.WaitingToStart);
         }
 
         #endregion
@@ -96,5 +101,21 @@ namespace _Workspace.Scripts
         }
 
         #endregion
+
+        #region Set Game Status
+
+        public void SetGameStatus(GameStatus newStatus)
+        {
+            _gameStatus = newStatus;
+        }
+
+        #endregion
+    }
+
+    public enum GameStatus
+    {
+        WaitingToStart,
+        Playing,
+        GameEnd
     }
 }

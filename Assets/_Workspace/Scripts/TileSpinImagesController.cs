@@ -45,6 +45,7 @@ public class TileSpinImagesController : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         
         HideSpinImages();
+        ReScaleSpinImages(0.85f);
         
         transform.GetChild(imageId).SetSiblingIndex(TileCount - 1);
 
@@ -54,7 +55,8 @@ public class TileSpinImagesController : MonoBehaviour
             .Append(FastImageChooseTween(.45f))
             .Append(FastImageChooseTween(.55f))
             .Append(FastImageChooseTween(.65f))
-            .Append(imageHolder.DOAnchorPosY((TileCount-1) * _tileSize, 1.2f));
+            .Append(imageHolder.DOAnchorPosY((TileCount-1) * _tileSize, 1.2f))
+            .OnComplete(()=> ReScaleSpinImages(1));
 
 
         return seq;
@@ -70,11 +72,16 @@ public class TileSpinImagesController : MonoBehaviour
         imageHolder.anchoredPosition = oldPos;
     }
 
-    public void HideSpinImages()
+    private void HideSpinImages()
     {
         var oldPos = imageHolder.anchoredPosition;
         oldPos.y = -_tileSize;
         
         imageHolder.anchoredPosition = oldPos;
+    }
+
+    private void ReScaleSpinImages(float newSize)
+    {
+        spinImagesList.ForEach(img => img.DOScale(Vector3.one*newSize,.5f));
     }
 }

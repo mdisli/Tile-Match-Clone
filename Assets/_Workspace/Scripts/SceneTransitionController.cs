@@ -22,7 +22,6 @@ public class SceneTransitionController : MonoBehaviour
     public void LoadSceneWithTransitionEffect(int sceneIndex, float startDelay)
     {
         TransitionManager.Instance().Transition(sceneIndex, transitionSettingsList[Random.Range(0,transitionSettingsList.Count)], startDelay);
-
     }
 
 }

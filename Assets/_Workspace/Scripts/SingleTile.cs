@@ -1,8 +1,11 @@
 using System;
+using _Workspace.Scripts;
 using DG.Tweening;
 using NaughtyAttributes;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SingleTile : MonoBehaviour, IPointerDownHandler
 {
@@ -15,25 +18,35 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
     
     private int _placeId;
     public int PlaceId => _placeId;
-    
-    private TileHolder _activeTileHolder;
+
+    private bool _isOpen = false;
+    [SerializeField] private Image closedImage;
+
+    private SingleTileGroupController _tileGroupController;
     #endregion
 
     #region Unity Funcs
 
     private void Start()
     {
-
-        _activeTileHolder = GetComponentInParent<TileHolder>();
+        // If tile dont have group open directly
+        if(!transform.parent.TryGetComponent<SingleTileGroupController>(out _tileGroupController))
+            OpenTile();
         _rectTransform = GetComponent<RectTransform>();
     }
     
     public void OnPointerDown(PointerEventData eventData)
     {
+        if(GameManager.instance.ActiveGameStatus != GameStatus.Playing) return;
         if(isPlaced) return;
+        if(!_isOpen) return;
+
         isPlaced = true;
         
-        _activeTileHolder.PlaceTile(this);
+        TileHolder.instance.PlaceTile(this);
+        
+        if(_tileGroupController !=null)
+            _tileGroupController.OpenTile();
 
     }
 
@@ -58,4 +71,16 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
         tileSpinner.ShowSelectedImage(imageId);
     }
 
+
+    public void OpenTile()
+    {
+        closedImage.DOFade(0, .3f)
+            .OnComplete(() =>
+            {
+                _isOpen = true;
+                closedImage.gameObject.SetActive(false);
+            });
+        
+        
+    }
 }
