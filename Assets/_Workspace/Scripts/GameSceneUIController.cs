@@ -20,13 +20,16 @@ namespace _Workspace.Scripts
         {
             TileHolder.OnGameFailed += TileHolderOnOnGameFailed;
             TileHolder.OnGameCompleted += TileHolderOnOnGameCompleted;
+            LevelGenerator.OnNewLevelLoaded += UpdateLevelText;
         }
 
         private void OnDisable()
         {
             TileHolder.OnGameFailed -= TileHolderOnOnGameFailed;
             TileHolder.OnGameCompleted -= TileHolderOnOnGameCompleted;
+            LevelGenerator.OnNewLevelLoaded -= UpdateLevelText;
         }
+        
 
         private void TileHolderOnOnGameFailed()
         {
