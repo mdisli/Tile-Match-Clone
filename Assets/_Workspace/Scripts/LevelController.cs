@@ -12,6 +12,18 @@ namespace _Workspace.Scripts
         public List<SingleTile> _singleTilesList = new List<SingleTile>();
         public List<SingleTileGroupController> _singleTileGroupControllers = new List<SingleTileGroupController>();
 
+        public int TotalTileCount {
+
+            get
+            {
+                int count = 0;
+                count += _singleTilesList.Count;
+                _singleTileGroupControllers.ForEach(x => count += x.allTilesList.Count);
+                
+                return count;
+            }
+        }
+
         public int levelId;
 
         #region Unity Funcs
@@ -64,7 +76,7 @@ namespace _Workspace.Scripts
         [Button]
         public void ExportLevelJson()
         {
-                var levelJsonClass = new LevelJsonClass();
+            var levelJsonClass = new LevelJsonClass();
 
             var allTileGroupsSettings = new List<TileGroupJsonClass>();
             var allSingleTilesSettings = new List<SingleTileJsonClass>();
@@ -98,6 +110,9 @@ namespace _Workspace.Scripts
 
         #endregion
     }
+
+    #region Classes for json
+
     [Serializable]
     public class LevelJsonClass
     {
@@ -125,4 +140,6 @@ namespace _Workspace.Scripts
         public List<SingleTileJsonClass> allTilesSettings = new List<SingleTileJsonClass>();
 
     }
+
+    #endregion
 }

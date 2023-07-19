@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +28,11 @@ namespace _Workspace.Scripts
         public List<SingleTile> placedTilesList = new List<SingleTile>();
         private int PlacedTileCount => placedTilesList.Count;
         private int _poppedTileCount=0;
-        
+        private int totalTileCount => _levelController.TotalTileCount;
+
         private Dictionary<int, int> _placedTileIdDictionary = new Dictionary<int, int>();
 
+        private LevelController _levelController;
         #endregion
 
         #region Unity Funcs
@@ -40,6 +43,11 @@ namespace _Workspace.Scripts
                 instance = this;
             else 
                 Destroy(gameObject);
+        }
+
+        private void Start()
+        {
+            _levelController = GameObject.FindObjectOfType<LevelController>();
         }
 
         #endregion
@@ -116,6 +124,11 @@ namespace _Workspace.Scripts
                 OnGameFailed?.Invoke();
             }
 
+
+            if (_poppedTileCount >= totalTileCount)
+            {
+                OnGameCompleted?.Invoke();
+            }
         }
 
         private IEnumerator PopTiles(List<SingleTile> tilesToRemove)

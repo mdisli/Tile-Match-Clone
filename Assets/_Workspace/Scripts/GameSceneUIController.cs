@@ -34,7 +34,7 @@ public class GameSceneUIController : MonoBehaviour
     
     private void TileHolderOnOnGameCompleted()
     {
-        OpenFailUI();
+        OpenWinUI();
     }
 
     private void UpdateLevelText()
@@ -46,8 +46,7 @@ public class GameSceneUIController : MonoBehaviour
     {
         winUIController.OpenWinUI();
     }
-
-    [Button()]
+    
     public void OpenFailUI()
     {
         failUIController.OpenFailUI();
