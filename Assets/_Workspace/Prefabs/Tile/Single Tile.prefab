@@ -11,13 +11,14 @@ GameObject:
   - component: {fileID: 8682048343679978543}
   - component: {fileID: 8548443766496744852}
   - component: {fileID: 8805969894074059947}
+  - component: {fileID: 3876073525316348812}
   m_Layer: 5
   m_Name: Close IMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8682048343679978543
 RectTransform:
   m_ObjectHideFlags: 0
@@ -76,6 +77,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &3876073525316348812
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548544104204144423}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &7653555294718387058
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,7 +489,7 @@ MonoBehaviour:
   tileSpinner: {fileID: 1246757129727673623}
   _rectTransform: {fileID: 0}
   isPlaced: 0
-  closedImage: {fileID: 8805969894074059947}
+  closedImage: {fileID: 3876073525316348812}
 --- !u!114 &7653555295074274422
 MonoBehaviour:
   m_ObjectHideFlags: 0

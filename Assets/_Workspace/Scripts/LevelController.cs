@@ -9,20 +9,11 @@ namespace _Workspace.Scripts
 {
     public class LevelController : MonoBehaviour
     {
+        public string levelName;
         public List<SingleTile> _singleTilesList = new List<SingleTile>();
         public List<SingleTileGroupController> _singleTileGroupControllers = new List<SingleTileGroupController>();
 
-        public int TotalTileCount {
-
-            get
-            {
-                int count = 0;
-                count += _singleTilesList.Count;
-                _singleTileGroupControllers.ForEach(x => count += x.allTilesList.Count);
-                
-                return count;
-            }
-        }
+        [HideInInspector]public int totalTileCount;
 
         public int levelId;
 
@@ -30,14 +21,35 @@ namespace _Workspace.Scripts
 
         private IEnumerator Start()
         {
+            CalculateTotalTileCount();
+            
             // Wait for spin animation 
-            //yield return new WaitForSeconds(3.6f);
-            yield return null;
+            yield return new WaitForSeconds(3.6f);
+            //yield return null;
             GameManager.instance.SetGameStatus(GameStatus.Playing);
+        }
+
+        private void OnEnable()
+        {
+            LevelGenerator.OnNewLevelLoaded += OnNewLevelLoaded;
+        }
+
+        private void OnDisable()
+        {
+            LevelGenerator.OnNewLevelLoaded -= OnNewLevelLoaded;
         }
 
         #endregion
 
+        private void OnNewLevelLoaded()
+        {
+            CalculateTotalTileCount();
+        }
+
+        private void CalculateTotalTileCount()
+        {
+            totalTileCount = GameObject.FindObjectsOfType<SingleTile>().Length;
+        }
 
         #region Exporting Json
 
@@ -98,7 +110,7 @@ namespace _Workspace.Scripts
             string json = JsonUtility.ToJson(levelJsonClass, true);
 
             string path = "Assets/_Workspace/LevelData/";
-            path += "Level" + levelId + ".json";
+            path += levelName + ".json";
             File.WriteAllText(path, json);
             Debug.Log("Level Saved");
 

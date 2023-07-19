@@ -1,54 +1,56 @@
-using System;
-using _Workspace.Scripts;
-using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class GameSceneUIController : MonoBehaviour
+namespace _Workspace.Scripts
 {
-    [SerializeField] private TextMeshProUGUI levelText;
-    [SerializeField] private WinUIController winUIController;
-    [SerializeField] private FailUIController failUIController;
-
-    private void Start()
+    public class GameSceneUIController : MonoBehaviour
     {
-        UpdateLevelText();
-    }
+        [SerializeField] private TextMeshProUGUI levelText;
+        [SerializeField] private WinUIController winUIController;
+        [SerializeField] private FailUIController failUIController;
 
-    private void OnEnable()
-    {
-        TileHolder.OnGameFailed += TileHolderOnOnGameFailed;
-        TileHolder.OnGameCompleted += TileHolderOnOnGameCompleted;
-    }
+        
+        private void Start()
+        {
+            UpdateLevelText();
+        }
 
-    private void OnDisable()
-    {
-        TileHolder.OnGameFailed -= TileHolderOnOnGameFailed;
-        TileHolder.OnGameCompleted -= TileHolderOnOnGameCompleted;
-    }
+        private void OnEnable()
+        {
+            TileHolder.OnGameFailed += TileHolderOnOnGameFailed;
+            TileHolder.OnGameCompleted += TileHolderOnOnGameCompleted;
+        }
 
-    private void TileHolderOnOnGameFailed()
-    {
-        OpenFailUI();
-    }
+        private void OnDisable()
+        {
+            TileHolder.OnGameFailed -= TileHolderOnOnGameFailed;
+            TileHolder.OnGameCompleted -= TileHolderOnOnGameCompleted;
+        }
+
+        private void TileHolderOnOnGameFailed()
+        {
+            OpenFailUI();
+        }
     
-    private void TileHolderOnOnGameCompleted()
-    {
-        OpenWinUI();
-    }
+        private void TileHolderOnOnGameCompleted()
+        {
+            Invoke(nameof(OpenWinUI),1);
+        }
 
-    private void UpdateLevelText()
-    {
-        levelText.SetText($"Level {GameManager.instance.Level}");
-    }
+        private void UpdateLevelText()
+        {
+            levelText.SetText($"Level {GameManager.instance.Level}");
+        }
     
-    public void OpenWinUI()
-    {
-        winUIController.OpenWinUI();
-    }
+        public void OpenWinUI()
+        {
+            winUIController.OpenWinUI();
+        }
     
-    public void OpenFailUI()
-    {
-        failUIController.OpenFailUI();
+        public void OpenFailUI()
+        {
+            failUIController.OpenFailUI();
+        }
     }
 }

@@ -92,6 +92,7 @@ namespace _Workspace.Scripts
         private void TileHolderOnOnGameCompleted()
         {
             SetGameStatus(GameStatus.GameEnd);
+            IncreaseLevel();
         }
 
         #endregion

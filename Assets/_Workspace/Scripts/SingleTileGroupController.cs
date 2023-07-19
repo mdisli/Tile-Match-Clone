@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,9 +12,12 @@ namespace _Workspace.Scripts
         private int OpenedTileCount => openTilesList.Count;
 
 
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return new WaitForSeconds(3.5f);
             OpenTile();
+            CloseTiles();
+            
         }
 
         public void OpenTile()
@@ -24,6 +28,17 @@ namespace _Workspace.Scripts
             
             tile.OpenTile();
             openTilesList.Add(tile);
+        }
+
+        private void CloseTiles()
+        {
+            if (allTilesList.Count > 1)
+            {
+                for (int i = 1; i <= allTilesList.Count - 1; i++)
+                {
+                    allTilesList[i].CloseTile();
+                }
+            }
         }
     }
 }

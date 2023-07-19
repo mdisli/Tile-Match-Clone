@@ -17,10 +17,7 @@ namespace _Workspace.Scripts
         public static event UnityAction OnGameCompleted;
 
         #endregion
-
-
-
-
+        
         #region Variables
 
         private const int MaxTileCount = 7;
@@ -28,7 +25,7 @@ namespace _Workspace.Scripts
         public List<SingleTile> placedTilesList = new List<SingleTile>();
         private int PlacedTileCount => placedTilesList.Count;
         private int _poppedTileCount=0;
-        private int totalTileCount => _levelController.TotalTileCount;
+        private int TotalTileCount => _levelController.totalTileCount;
 
         private Dictionary<int, int> _placedTileIdDictionary = new Dictionary<int, int>();
 
@@ -47,10 +44,34 @@ namespace _Workspace.Scripts
 
         private void Start()
         {
-            _levelController = GameObject.FindObjectOfType<LevelController>();
+            FindLevelController();
+        }
+
+        private void OnEnable()
+        {
+            WinUIController.OnNextLevelButtonClicked += OnNextLevel;
+        }
+
+        private void OnDisable()
+        {
+            WinUIController.OnNextLevelButtonClicked -= OnNextLevel;
         }
 
         #endregion
+
+        private void OnNextLevel()
+        {
+            placedTilesList.Clear();
+            _poppedTileCount = 0;
+            
+            FindLevelController();
+            
+        }
+
+        private void FindLevelController()
+        {
+            _levelController = GameObject.FindObjectOfType<LevelController>();
+        }
 
         private Vector3 GetEmptyReferenceAnchorPosition(int id)
         {
@@ -61,8 +82,6 @@ namespace _Workspace.Scripts
             
                 SwipeTiles(newId);
 
-                //await Task.Delay(150);
-            
                 var refPosition = referencePlacesList[newId].position;
                 return new Vector3(refPosition.x, refPosition.y, newId);
 
@@ -72,19 +91,15 @@ namespace _Workspace.Scripts
                 var refPosition = referencePlacesList[PlacedTileCount].position;
                 return new Vector3(refPosition.x, refPosition.y, PlacedTileCount);
             }
-          
         } 
-
         
-
         public  void PlaceTile(SingleTile tile)
         {
             tile.isPlaced = true;
         
             var refPos = GetEmptyReferenceAnchorPosition(tile.imageId);
-        
-
-            tile._rectTransform.DOMove(new Vector3(refPos.x, refPos.y,0), .25f);
+            
+            tile._rectTransform.DOMove(new Vector3(refPos.x, refPos.y,0), .2f);
 
             placedTilesList.Add(tile);
 
@@ -125,7 +140,7 @@ namespace _Workspace.Scripts
             }
 
 
-            if (_poppedTileCount >= totalTileCount)
+            if (_poppedTileCount >= TotalTileCount)
             {
                 OnGameCompleted?.Invoke();
             }
@@ -163,10 +178,10 @@ namespace _Workspace.Scripts
                 placedTilesList[i].SetPlaceId(i);
             }
         
-            RePlaceTiles(delay:.1f);
+            RePlaceTiles(delay:.025f);
         }
 
-        private void RePlaceTiles(float duration = .2f, float delay=0f)
+        private void RePlaceTiles(float duration = .1f, float delay=0f)
         {
             int i = 0;
             foreach (var tile in placedTilesList)
@@ -185,7 +200,7 @@ namespace _Workspace.Scripts
                 tile.SetPlaceId(tile.PlaceId+1);
             });
 
-            RePlaceTiles(.25f,0);
+            RePlaceTiles(.15f,0);
         }
     }
 }

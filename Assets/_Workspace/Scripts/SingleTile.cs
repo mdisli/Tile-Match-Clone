@@ -1,6 +1,7 @@
 using System;
 using _Workspace.Scripts;
 using DG.Tweening;
+using EasyTransition;
 using NaughtyAttributes;
 using UnityEditor.Rendering;
 using UnityEngine;
@@ -19,22 +20,23 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
     private int _placeId;
     public int PlaceId => _placeId;
 
-    private bool _isOpen = false;
-    [SerializeField] private Image closedImage;
+    private bool _isOpen = true;
+    [SerializeField] private CanvasGroup closedImage;
 
     private SingleTileGroupController _tileGroupController;
     #endregion
 
     #region Unity Funcs
-
     private void Start()
     {
         // If tile dont have group open directly
         if(!transform.parent.TryGetComponent<SingleTileGroupController>(out _tileGroupController))
             OpenTile();
         _rectTransform = GetComponent<RectTransform>();
+        
+        
     }
-    
+
     public void OnPointerDown(PointerEventData eventData)
     {
         if(GameManager.instance.ActiveGameStatus != GameStatus.Playing) return;
@@ -51,12 +53,12 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
     }
 
     #endregion
-
+    
     public void DestroyTile()
     {
         transform.DOScale(Vector3.zero, .25f)
             .SetEase(Ease.InQuart)
-            .SetDelay(.3f)
+            .SetDelay(.15f)
             .OnComplete(() => Destroy(gameObject));
     }
 
@@ -69,6 +71,13 @@ public class SingleTile : MonoBehaviour, IPointerDownHandler
     public void ShowSelectedImage()
     {
         tileSpinner.ShowSelectedImage(imageId);
+    }
+
+    public void CloseTile()
+    {
+        closedImage.gameObject.SetActive(true);
+        _isOpen = false;
+        closedImage.DOFade(1, .3f).From(0);
     }
 
 

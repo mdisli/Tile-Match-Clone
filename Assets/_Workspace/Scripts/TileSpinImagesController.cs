@@ -1,87 +1,100 @@
-using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using EasyTransition;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class TileSpinImagesController : MonoBehaviour
+namespace _Workspace.Scripts
 {
-    [SerializeField] private List<RectTransform> spinImagesList = new List<RectTransform>();
-    [SerializeField] private RectTransform imageHolder;
+    public class TileSpinImagesController : MonoBehaviour
+    {
+        [SerializeField] private List<RectTransform> spinImagesList = new List<RectTransform>();
+        [SerializeField] private RectTransform imageHolder;
 
-    private SingleTile _singleTile;
+        private SingleTile _singleTile;
     
-    private float _tileSize = 120;
-    private int TileCount => spinImagesList.Count;
+        private float _tileSize = 120;
+        private int TileCount => spinImagesList.Count;
 
-    private int imageId;
-
-    private void Awake()
-    {
-        _tileSize = spinImagesList[0].rect.width;
-        _singleTile = GetComponentInParent<SingleTile>();
-        imageId = _singleTile.imageId;
-    }
-
-    private void Start()
-    {
-        SlowImageChooseSequence();
-    }
-
-    #region Image Spin Sequence
-
-    private Tween FastImageChooseTween(float duration)
-    {
-        return imageHolder.DOAnchorPosY(TileCount * _tileSize, duration)
-            .SetEase(Ease.Linear)
-            .OnComplete(()=>
-            {
-                imageHolder.anchoredPosition = new Vector2(imageHolder.anchoredPosition.x, -_tileSize);
-            });
-    }
-
-    private Sequence SlowImageChooseSequence()
-    {
-        Sequence seq = DOTween.Sequence();
+        [SerializeField]private int _imageId;
         
-        HideSpinImages();
-        ReScaleSpinImages(0.85f);
+        private void Start()
+        {
+            _tileSize = spinImagesList[0].rect.width;
+            _singleTile = GetComponentInParent<SingleTile>();
+            _imageId = _singleTile.imageId;
+            SlowImageChooseSequence();
+        }
+
+        private void OnEnable()
+        {
+            TransitionManager.Instance().onTransitionEnd += OnTransitionEnd;
+        }
+    
+        private void OnDisable()
+        {
+            TransitionManager.Instance().onTransitionEnd -= OnTransitionEnd;
+        }
+
+        private void OnTransitionEnd()
+        {
+            SlowImageChooseSequence();
+        }
         
-        transform.GetChild(imageId).SetSiblingIndex(TileCount - 1);
+        #region Image Spin Sequence
 
-        seq.Join(FastImageChooseTween(.15f))
-            .Append(FastImageChooseTween(.25f))
-            .Append(FastImageChooseTween(.35f))
-            .Append(FastImageChooseTween(.45f))
-            .Append(FastImageChooseTween(.55f))
-            .Append(FastImageChooseTween(.65f))
-            .Append(imageHolder.DOAnchorPosY((TileCount-1) * _tileSize, 1.2f))
-            .OnComplete(()=> ReScaleSpinImages(1));
+        private Tween FastImageChooseTween(float duration)
+        {
+            return imageHolder.DOAnchorPosY(TileCount * _tileSize, duration)
+                .SetEase(Ease.Linear)
+                .OnComplete(()=>
+                {
+                    imageHolder.anchoredPosition = new Vector2(imageHolder.anchoredPosition.x, -_tileSize);
+                });
+        }
 
-
-        return seq;
-    }
-
-    #endregion
-
-    public void ShowSelectedImage(int id)
-    {
-        var oldPos = imageHolder.anchoredPosition;
-        oldPos.y = _tileSize * id;
-
-        imageHolder.anchoredPosition = oldPos;
-    }
-
-    private void HideSpinImages()
-    {
-        var oldPos = imageHolder.anchoredPosition;
-        oldPos.y = -_tileSize;
+        private Sequence SlowImageChooseSequence()
+        {
+            Sequence seq = DOTween.Sequence();
         
-        imageHolder.anchoredPosition = oldPos;
-    }
+            HideSpinImages();
+            ReScaleSpinImages(0.85f);
+        
+            transform.GetChild(_imageId).SetSiblingIndex(TileCount - 1);
 
-    private void ReScaleSpinImages(float newSize)
-    {
-        spinImagesList.ForEach(img => img.DOScale(Vector3.one*newSize,.5f));
+            seq.Join(FastImageChooseTween(.15f))
+                .Append(FastImageChooseTween(.25f))
+                .Append(FastImageChooseTween(.35f))
+                .Append(FastImageChooseTween(.45f))
+                .Append(FastImageChooseTween(.55f))
+                .Append(FastImageChooseTween(.65f))
+                .Append(imageHolder.DOAnchorPosY((TileCount-1) * _tileSize, 1.2f))
+                .OnComplete(()=> ReScaleSpinImages(1));
+
+
+            return seq;
+        }
+
+        #endregion
+
+        public void ShowSelectedImage(int id)
+        {
+            var oldPos = imageHolder.anchoredPosition;
+            oldPos.y = _tileSize * id;
+
+            imageHolder.anchoredPosition = oldPos;
+        }
+
+        private void HideSpinImages()
+        {
+            var oldPos = imageHolder.anchoredPosition;
+            oldPos.y = -_tileSize;
+        
+            imageHolder.anchoredPosition = oldPos;
+        }
+
+        private void ReScaleSpinImages(float newSize)
+        {
+            spinImagesList.ForEach(img => img.DOScale(Vector3.one*newSize,.5f));
+        }
     }
 }
