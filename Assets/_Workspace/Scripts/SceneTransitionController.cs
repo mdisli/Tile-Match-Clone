@@ -2,26 +2,29 @@ using System.Collections.Generic;
 using EasyTransition;
 using UnityEngine;
 
-public class SceneTransitionController : MonoBehaviour
+namespace _Workspace.Scripts
 {
-    public static SceneTransitionController instance;
-    public List<TransitionSettings> transitionSettingsList;
-
-    private void Awake()
+    public class SceneTransitionController : MonoBehaviour
     {
-        //Singleton
-        if (instance == null)
+        public static SceneTransitionController instance;
+        public List<TransitionSettings> transitionSettingsList;
+
+        private void Awake()
         {
-            instance = this;
-            DontDestroyOnLoad(this);
+            //Singleton
+            if (instance == null)
+            {
+                instance = this;
+                DontDestroyOnLoad(this);
+            }
+            else
+                Destroy(gameObject);
         }
-        else
-            Destroy(gameObject);
-    }
 
-    public void LoadSceneWithTransitionEffect(int sceneIndex, float startDelay)
-    {
-        TransitionManager.Instance().Transition(sceneIndex, transitionSettingsList[Random.Range(0,transitionSettingsList.Count)], startDelay);
-    }
+        public void LoadSceneWithTransitionEffect(int sceneIndex, float startDelay)
+        {
+            TransitionManager.Instance().Transition(sceneIndex, transitionSettingsList[Random.Range(0,transitionSettingsList.Count)], startDelay);
+        }
 
+    }
 }

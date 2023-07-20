@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace _Workspace.Scripts
 {
@@ -43,7 +42,7 @@ namespace _Workspace.Scripts
 
         private void UpdateLevelText()
         {
-            levelText.SetText($"Level {GameManager.instance.Level}");
+            levelText.SetText($"Level {PlayerPrefsManager.Level}");
         }
     
         public void OpenWinUI()

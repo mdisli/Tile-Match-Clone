@@ -15,6 +15,14 @@ namespace _Workspace.Scripts
         #region Unity Actions
         public static event UnityAction OnGameFailed;
         public static event UnityAction OnGameCompleted;
+        
+        public static event UnityAction<OnTilesPoppedActionClass> OnTilesPopped;
+
+        public class OnTilesPoppedActionClass
+        {
+            public List<Vector3> positions = new List<Vector3>();
+            public int poppedTileCount => positions.Count;
+        }
 
         #endregion
         
@@ -22,6 +30,8 @@ namespace _Workspace.Scripts
 
         private const int MaxTileCount = 7;
         [SerializeField] private List<RectTransform> referencePlacesList = new List<RectTransform>();
+        [SerializeField] private List<RectTransform> referenceReplacementPlacesList = new List<RectTransform>();
+        private List<SingleTile> _replacementPlacedTiles = new List<SingleTile>();
         public List<SingleTile> placedTilesList = new List<SingleTile>();
         private int PlacedTileCount => placedTilesList.Count;
         private int _poppedTileCount=0;
@@ -72,51 +82,7 @@ namespace _Workspace.Scripts
         {
             _levelController = GameObject.FindObjectOfType<LevelController>();
         }
-
-        private Vector3 GetEmptyReferenceAnchorPosition(int id)
-        {
-            if (_placedTileIdDictionary.ContainsKey(id))
-            {
-                var x = placedTilesList.Where((tile) => tile.imageId == id).ToList();
-                var newId = x[^1].PlaceId + 1;
-            
-                SwipeTiles(newId);
-
-                var refPosition = referencePlacesList[newId].position;
-                return new Vector3(refPosition.x, refPosition.y, newId);
-
-            }
-            else
-            {
-                var refPosition = referencePlacesList[PlacedTileCount].position;
-                return new Vector3(refPosition.x, refPosition.y, PlacedTileCount);
-            }
-        } 
         
-        public  void PlaceTile(SingleTile tile)
-        {
-            tile.isPlaced = true;
-        
-            var refPos = GetEmptyReferenceAnchorPosition(tile.imageId);
-            
-            tile._rectTransform.DOMove(new Vector3(refPos.x, refPos.y,0), .2f);
-
-            placedTilesList.Add(tile);
-
-            if (_placedTileIdDictionary.ContainsKey(tile.imageId))
-            {
-                _placedTileIdDictionary[tile.imageId]++;
-            }
-            else
-            {
-                _placedTileIdDictionary.Add(tile.imageId,1);
-            }
-
-            tile.SetPlaceId((int)refPos.z);
-        
-            CheckGameStatus();
-        }
-
         private void CheckGameStatus()
         {
             List<SingleTile> tilesToRemove = new List<SingleTile>();
@@ -160,12 +126,68 @@ namespace _Workspace.Scripts
                 _poppedTileCount++;
             }
 
+            List<Vector3> positionList = new List<Vector3>();
+            foreach (var tile in tilesToRemove)
+            {
+                positionList.Add(referencePlacesList[tile.PlaceId].position);
+            }
+
+            OnTilesPopped?.Invoke(new OnTilesPoppedActionClass()
+            {
+                positions = positionList
+            });
+                            
+            
             yield return new WaitForSeconds(.45f);
-        
+
             ReorderTiles();
         
         }
 
+        #region Tile Placement & Movement
+
+        private Vector3 GetEmptyReferencePosition(int id)
+        {
+            if (_placedTileIdDictionary.ContainsKey(id))
+            {
+                var x = placedTilesList.Where((tile) => tile.imageId == id).ToList();
+                var newId = x[^1].PlaceId + 1;
+            
+                SwipeTiles(newId);
+
+                var refPosition = referencePlacesList[newId].position;
+                return new Vector3(refPosition.x, refPosition.y, newId);
+
+            }
+            else
+            {
+                var refPosition = referencePlacesList[PlacedTileCount].position;
+                return new Vector3(refPosition.x, refPosition.y, PlacedTileCount);
+            }
+        } 
+        public  void PlaceTile(SingleTile tile)
+        {
+            tile.isPlaced = true;
+        
+            var refPos = GetEmptyReferencePosition(tile.imageId);
+            
+            tile._rectTransform.DOMove(new Vector3(refPos.x, refPos.y,0), .2f);
+
+            placedTilesList.Add(tile);
+
+            if (_placedTileIdDictionary.ContainsKey(tile.imageId))
+            {
+                _placedTileIdDictionary[tile.imageId]++;
+            }
+            else
+            {
+                _placedTileIdDictionary.Add(tile.imageId,1);
+            }
+
+            tile.SetPlaceId((int)refPos.z);
+        
+            CheckGameStatus();
+        }
         private void ReOrderPlacedTilesByPlaceId()
         {
             placedTilesList = placedTilesList.OrderBy(x => x.PlaceId).ToList();
@@ -202,5 +224,27 @@ namespace _Workspace.Scripts
 
             RePlaceTiles(.15f,0);
         }
+
+
+        private void TakeOutRandomTiles(int tileCount)
+        {
+            if(tileCount >= placedTilesList.Count)return;
+            
+            List<SingleTile> tilesToRemove = new List<SingleTile>();
+            for (int i = 0; i < tileCount; i++)
+            {
+                var randomTile = placedTilesList[UnityEngine.Random.Range(0, placedTilesList.Count)];
+                tilesToRemove.Add(randomTile);
+                placedTilesList.Remove(randomTile);
+            }
+
+            foreach (var tile in tilesToRemove)
+            {
+                tile.transform.DOMove(referenceReplacementPlacesList[_replacementPlacedTiles.Count].position, .2f);
+                _replacementPlacedTiles.Add(tile);
+                tile.isPlaced = false;
+            }
+        }
+        #endregion
     }
 }

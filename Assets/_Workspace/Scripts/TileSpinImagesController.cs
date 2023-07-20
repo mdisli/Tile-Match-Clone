@@ -28,11 +28,13 @@ namespace _Workspace.Scripts
         private void OnEnable()
         {
             TransitionManager.Instance().onTransitionEnd += OnTransitionEnd;
+            LevelGenerator.OnNewLevelLoaded += OnTransitionEnd;
         }
     
         private void OnDisable()
         {
             TransitionManager.Instance().onTransitionEnd -= OnTransitionEnd;
+            LevelGenerator.OnNewLevelLoaded -= OnTransitionEnd;
         }
 
         private void OnTransitionEnd()
@@ -59,7 +61,9 @@ namespace _Workspace.Scripts
             HideSpinImages();
             ReScaleSpinImages(0.85f);
         
-            transform.GetChild(_imageId).SetSiblingIndex(TileCount - 1);
+            //transform.GetChild(_imageId).SetSiblingIndex(TileCount - 1);
+            
+            spinImagesList[_imageId].SetSiblingIndex(TileCount - 1);
 
             seq.Join(FastImageChooseTween(.15f))
                 .Append(FastImageChooseTween(.25f))

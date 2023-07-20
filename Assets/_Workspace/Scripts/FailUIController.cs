@@ -1,59 +1,75 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
-public class FailUIController : MonoBehaviour,IPointerDownHandler,IPointerUpHandler
+namespace _Workspace.Scripts
 {
-    #region Variables
+    public class FailUIController : MonoBehaviour,IPointerDownHandler,IPointerUpHandler
+    {
+        #region Variables
 
-    [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private CanvasGroup canvasGroup;
     
-    [SerializeField] private RectTransform failTextRectTransform;
-    [SerializeField] private RectTransform playWithPayButtonRectTransform;
-    [SerializeField] private RectTransform giveUpButtonRectTransform;
+        [SerializeField] private RectTransform failTextRectTransform;
+        [SerializeField] private RectTransform playWithPayButtonRectTransform;
+        [SerializeField] private RectTransform giveUpButtonRectTransform;
 
-    [SerializeField] private Button playWithPayButton;
-    [SerializeField] private Button giveUpButton;
+        [SerializeField] private Button playWithPayButton;
+        [SerializeField] private Button giveUpButton;
 
-    #endregion
+        public static event UnityAction OnPlayWithPayButtonClicked;
+        #endregion
 
-    #region Unity Funcs
+        #region Unity Funcs
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        DOTween.Kill(canvasGroup);
-        canvasGroup.DOFade(0, 1f);
-    }
+        private void Start()
+        {
+            playWithPayButton.clicked += PlayWithPayButtonOnclicked;
+        }
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        DOTween.Kill(canvasGroup);
-        canvasGroup.DOFade(1, 1f);
-    }
+        private void PlayWithPayButtonOnclicked()
+        {
+            
+        }
 
-    #endregion
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            DOTween.Kill(canvasGroup);
+            canvasGroup.DOFade(0, 1f);
+        }
 
-    #region UI Elements Tweens
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            DOTween.Kill(canvasGroup);
+            canvasGroup.DOFade(1, 1f);
+        }
 
-    private Sequence UIAppearSequence()
-    {
-        Sequence seq = DOTween.Sequence();
+        #endregion
 
-        seq.Join(failTextRectTransform.DOAnchorPosY(0, 1f).SetEase(Ease.OutBounce))
-            .Join(playWithPayButtonRectTransform.DOAnchorPosX(270, 1f).SetEase(Ease.Linear))
-            .Join(giveUpButtonRectTransform.DOAnchorPosX(-270, 1f).SetEase(Ease.Linear));
+        #region UI Elements Tweens
 
-        return seq;
-    }
+        private Sequence UIAppearSequence()
+        {
+            Sequence seq = DOTween.Sequence();
 
-    #endregion
+            seq.Join(failTextRectTransform.DOAnchorPosY(0, 1f).SetEase(Ease.OutBounce))
+                .Append(playWithPayButtonRectTransform.DOAnchorPosX(270, 1f).SetEase(Ease.Linear))
+                .Join(giveUpButtonRectTransform.DOAnchorPosX(-270, 1f).SetEase(Ease.Linear));
 
-    public void OpenFailUI()
-    {
-        gameObject.SetActive(true);
-        UIAppearSequence();
-    }
+            return seq;
+        }
+
+        #endregion
+
+        public void OpenFailUI()
+        {
+            gameObject.SetActive(true);
+            UIAppearSequence();
+        }
 
    
+    }
 }
