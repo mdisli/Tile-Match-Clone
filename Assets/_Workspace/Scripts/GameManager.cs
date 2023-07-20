@@ -13,6 +13,7 @@ namespace _Workspace.Scripts
         private GameStatus _gameStatus;
         public GameStatus ActiveGameStatus => _gameStatus;
 
+        [HideInInspector]public int gainedCoinOnThisLevel = 0;
         #endregion
 
         #region Unity Funcs
@@ -36,12 +37,35 @@ namespace _Workspace.Scripts
         {
             TileHolder.OnGameCompleted += TileHolderOnOnGameCompleted;
             TileHolder.OnGameFailed += TileHolderOnOnGameFailed;
+            TileHolder.OnTilesPopped += TileHolderOnOnTilesPopped;
+            LevelGenerator.OnNewLevelLoaded += LevelGeneratorOnOnNewLevelLoaded;
+            FailUIController.OnPlayWithPayButtonClicked += FailUIControllerOnOnPlayWithPayButtonClicked;
         }
 
         private void OnDisable()
         {
             TileHolder.OnGameCompleted -= TileHolderOnOnGameCompleted;
             TileHolder.OnGameFailed -= TileHolderOnOnGameFailed;
+            TileHolder.OnTilesPopped -= TileHolderOnOnTilesPopped;
+            FailUIController.OnPlayWithPayButtonClicked -= FailUIControllerOnOnPlayWithPayButtonClicked;
+            LevelGenerator.OnNewLevelLoaded -= LevelGeneratorOnOnNewLevelLoaded;
+        }
+
+        private void LevelGeneratorOnOnNewLevelLoaded()
+        {
+            // reset gained gold
+            gainedCoinOnThisLevel = 0;
+        }
+
+        private void FailUIControllerOnOnPlayWithPayButtonClicked()
+        {
+            SetGameStatus(GameStatus.Playing);
+        }
+
+        private void TileHolderOnOnTilesPopped(TileHolder.OnTilesPoppedActionClass arg0)
+        {
+            PlayerPrefsManager.AddMoney(arg0.poppedTileCount*10);
+            gainedCoinOnThisLevel += arg0.poppedTileCount*10;
         }
 
         private void TileHolderOnOnGameFailed()

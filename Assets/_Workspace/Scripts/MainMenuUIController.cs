@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,33 +12,54 @@ namespace _Workspace.Scripts
     
         [SerializeField] private MainMenuInfoBar coinInfoBar;
         [SerializeField] private MainMenuInfoBar healthInfoBar;
-    
-        private const string CoinPrefsKey = "CoinCount";
-        private const string HealthPrefsKey = "HealthCount";
-        private const string LevelPrefsKey = "Level";
 
-        private int CoinCount => PlayerPrefs.GetInt(CoinPrefsKey, 0);
-        private int HealthAmount => PlayerPrefs.GetInt(HealthPrefsKey, 0);
-        private int Level => PlayerPrefs.GetInt(LevelPrefsKey, 0);
+        [SerializeField] private CanvasGroup youDontHaveHealthCanvasGroup;
         private void Start()
         {
-            levelStartButton.onClick.AddListener(()=> SceneTransitionController.instance.LoadSceneWithTransitionEffect(1,0));
-        
+            PlayerPrefsManager.OnHealthAmountIncreased += PlayerPrefsManagerOnOnHealthAmountIncreased;
+            
+            levelStartButton.onClick.AddListener(PlayButtonClicked);
             UpdateInfoBars();
+            PlayerPrefsManager.CheckForHealthIncrease();
         
         }
 
         private void OnDestroy()
         {
             levelStartButton.onClick.RemoveListener(()=> SceneTransitionController.instance.LoadSceneWithTransitionEffect(1,0));
+            PlayerPrefsManager.OnHealthAmountIncreased -= PlayerPrefsManagerOnOnHealthAmountIncreased;
         }
 
+        private void PlayButtonClicked()
+        {
+            if (PlayerPrefsManager.HealthAmount > 0)
+            {
+                SceneTransitionController.instance.LoadSceneWithTransitionEffect(1, 0);
+            }
+            else
+            {
+                DontHaveHealthSeq();
+            }
+        }
 
+        private Sequence DontHaveHealthSeq()
+        {
+            Sequence seq = DOTween.Sequence();
+            seq.Join(youDontHaveHealthCanvasGroup.DOFade(1, 0.5f).SetEase(Ease.OutCubic))
+                .Append(youDontHaveHealthCanvasGroup.DOFade(0, .35f).SetDelay(.5f));
+
+            return seq;
+        }
         private void UpdateInfoBars()
         {
-            coinInfoBar.UpdateAmountTxt(CoinCount);
-            healthInfoBar.UpdateAmountTxt(HealthAmount);
-            levelTxt.SetText($"Level {Level}");
+            coinInfoBar.UpdateAmountTxt(PlayerPrefsManager.CoinAmount);
+            healthInfoBar.UpdateAmountTxt(PlayerPrefsManager.HealthAmount);
+            levelTxt.SetText($"Level {PlayerPrefsManager.Level}");
+        }
+        
+        private void PlayerPrefsManagerOnOnHealthAmountIncreased()
+        {
+            UpdateInfoBars();
         }
     }
 }

@@ -18,6 +18,8 @@ namespace _Workspace.Scripts
         
         public static event UnityAction<OnTilesPoppedActionClass> OnTilesPopped;
 
+        public static event UnityAction OnTilePlaced;
+
         public class OnTilesPoppedActionClass
         {
             public List<Vector3> positions = new List<Vector3>();
@@ -60,11 +62,13 @@ namespace _Workspace.Scripts
         private void OnEnable()
         {
             WinUIController.OnNextLevelButtonClicked += OnNextLevel;
+            FailUIController.OnPlayWithPayButtonClicked += TakeOutRandomTiles;
         }
 
         private void OnDisable()
         {
             WinUIController.OnNextLevelButtonClicked -= OnNextLevel;
+            FailUIController.OnPlayWithPayButtonClicked -= TakeOutRandomTiles;
         }
 
         #endregion
@@ -167,6 +171,8 @@ namespace _Workspace.Scripts
         } 
         public  void PlaceTile(SingleTile tile)
         {
+            OnTilePlaced?.Invoke();
+            
             tile.isPlaced = true;
         
             var refPos = GetEmptyReferencePosition(tile.imageId);
@@ -183,7 +189,7 @@ namespace _Workspace.Scripts
             {
                 _placedTileIdDictionary.Add(tile.imageId,1);
             }
-
+            
             tile.SetPlaceId((int)refPos.z);
         
             CheckGameStatus();
@@ -226,12 +232,11 @@ namespace _Workspace.Scripts
         }
 
 
-        private void TakeOutRandomTiles(int tileCount)
+        private void TakeOutRandomTiles()
         {
-            if(tileCount >= placedTilesList.Count)return;
-            
+
             List<SingleTile> tilesToRemove = new List<SingleTile>();
-            for (int i = 0; i < tileCount; i++)
+            for (int i = 0; i < 3; i++)
             {
                 var randomTile = placedTilesList[UnityEngine.Random.Range(0, placedTilesList.Count)];
                 tilesToRemove.Add(randomTile);
@@ -243,7 +248,13 @@ namespace _Workspace.Scripts
                 tile.transform.DOMove(referenceReplacementPlacesList[_replacementPlacedTiles.Count].position, .2f);
                 _replacementPlacedTiles.Add(tile);
                 tile.isPlaced = false;
+                
+                _placedTileIdDictionary[tile.imageId]--;
+                if(_placedTileIdDictionary[tile.imageId] <= 0)
+                    _placedTileIdDictionary.Remove(tile.imageId);
             }
+            
+            ReorderTiles();
         }
         #endregion
     }

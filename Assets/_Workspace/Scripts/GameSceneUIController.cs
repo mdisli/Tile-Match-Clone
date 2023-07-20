@@ -13,6 +13,7 @@ namespace _Workspace.Scripts
         private void Start()
         {
             UpdateLevelText();
+            PlayerPrefsManager.CheckForHealthIncrease();
         }
 
         private void OnEnable()
