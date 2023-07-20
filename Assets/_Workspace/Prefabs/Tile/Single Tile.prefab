@@ -487,7 +487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   imageId: 0
   tileSpinner: {fileID: 1246757129727673623}
-  _rectTransform: {fileID: 0}
+  _rectTransform: {fileID: 7653555295074274426}
   isPlaced: 0
   closedImage: {fileID: 3876073525316348812}
 --- !u!114 &7653555295074274422
@@ -590,3 +590,4 @@ MonoBehaviour:
   - {fileID: 7653555294718387057}
   - {fileID: 7653555294791266627}
   imageHolder: {fileID: 7653555295947833806}
+  _imageId: 0

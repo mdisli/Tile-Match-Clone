@@ -57,7 +57,10 @@ namespace _Workspace.Scripts
         {
             SingleTileJsonClass tileData = new SingleTileJsonClass();
 
-            tileData.position = tile.transform.position;
+            //tileData.position = tile.transform.position;
+            tileData.anchoredPosition = tile._rectTransform.anchoredPosition;
+            tileData.anchorMax = tile._rectTransform.anchorMax;
+            tileData.anchorMin = tile._rectTransform.anchorMin;
             tileData.rotation = tile.transform.eulerAngles;
             tileData.imageId = tile.imageId;
 
@@ -135,7 +138,9 @@ namespace _Workspace.Scripts
     [Serializable]
     public class SingleTileJsonClass
     {
-        public Vector3 position;
+        public Vector2 anchoredPosition;
+        public Vector2 anchorMax;
+        public Vector2 anchorMin;
         public Vector3 rotation;
         public int imageId;
 

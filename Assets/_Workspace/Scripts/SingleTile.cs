@@ -11,7 +11,7 @@ namespace _Workspace.Scripts
     
         public int imageId;
         [SerializeField] private TileSpinImagesController tileSpinner;
-        [HideInInspector] public RectTransform _rectTransform;
+        public RectTransform _rectTransform;
         [HideInInspector]  public bool isPlaced;
     
         private int _placeId;
@@ -89,5 +89,18 @@ namespace _Workspace.Scripts
         
         
         }
+
+        #region Setting Tile
+
+        public void SetTile(SingleTileJsonClass tileJsonClass)
+        {
+            imageId = tileJsonClass.imageId;
+            _rectTransform.anchorMin = tileJsonClass.anchorMin;
+            _rectTransform.anchorMax = tileJsonClass.anchorMax;
+            _rectTransform.anchoredPosition = tileJsonClass.anchoredPosition;
+            ShowSelectedImage();
+        }
+
+        #endregion
     }
 }

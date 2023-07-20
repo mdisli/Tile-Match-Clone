@@ -2,10 +2,17 @@
     "allTileGroupsSettings": [],
     "allSingleTilesSettings": [
         {
-            "position": {
-                "x": 260.0,
-                "y": 1699.3333740234375,
-                "z": 0.0
+            "anchoredPosition": {
+                "x": -200.0,
+                "y": 400.0
+            },
+            "anchorMax": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "anchorMin": {
+                "x": 0.5,
+                "y": 0.5
             },
             "rotation": {
                 "x": 0.0,
@@ -15,10 +22,17 @@
             "imageId": 0
         },
         {
-            "position": {
-                "x": 585.0,
-                "y": 1699.3333740234375,
-                "z": 0.0
+            "anchoredPosition": {
+                "x": 0.0,
+                "y": 400.0
+            },
+            "anchorMax": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "anchorMin": {
+                "x": 0.5,
+                "y": 0.5
             },
             "rotation": {
                 "x": 0.0,
@@ -28,10 +42,17 @@
             "imageId": 0
         },
         {
-            "position": {
-                "x": 910.0,
-                "y": 1699.3333740234375,
-                "z": 0.0
+            "anchoredPosition": {
+                "x": 200.0,
+                "y": 400.0
+            },
+            "anchorMax": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "anchorMin": {
+                "x": 0.5,
+                "y": 0.5
             },
             "rotation": {
                 "x": 0.0,
@@ -41,10 +62,17 @@
             "imageId": 0
         },
         {
-            "position": {
-                "x": 260.0,
-                "y": 1266.0,
-                "z": 0.0
+            "anchoredPosition": {
+                "x": -200.0,
+                "y": 150.0
+            },
+            "anchorMax": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "anchorMin": {
+                "x": 0.5,
+                "y": 0.5
             },
             "rotation": {
                 "x": 0.0,
@@ -54,10 +82,17 @@
             "imageId": 0
         },
         {
-            "position": {
-                "x": 585.0,
-                "y": 1266.0,
-                "z": 0.0
+            "anchoredPosition": {
+                "x": 0.0,
+                "y": 150.0
+            },
+            "anchorMax": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "anchorMin": {
+                "x": 0.5,
+                "y": 0.5
             },
             "rotation": {
                 "x": 0.0,
@@ -67,10 +102,17 @@
             "imageId": 0
         },
         {
-            "position": {
-                "x": 910.0,
-                "y": 1266.0,
-                "z": 0.0
+            "anchoredPosition": {
+                "x": 200.0,
+                "y": 150.0
+            },
+            "anchorMax": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "anchorMin": {
+                "x": 0.5,
+                "y": 0.5
             },
             "rotation": {
                 "x": 0.0,

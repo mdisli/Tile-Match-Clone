@@ -17,6 +17,8 @@ namespace _Workspace.Scripts
         [SerializeField] private TextMeshProUGUI gainedGoldText;
         [SerializeField] private CanvasGroup wellDoneTextCanvasGroup;
 
+        [SerializeField] private Button homeButton;
+
 
         public static event UnityAction OnNextLevelButtonClicked;
 
@@ -24,6 +26,7 @@ namespace _Workspace.Scripts
         private void Start()
         {
             continueButton.onClick.AddListener(CloseWinUI);
+            homeButton.onClick.AddListener(() => SceneTransitionController.instance.LoadSceneWithTransitionEffect(0, 0));
         }
 
         #region Sequences

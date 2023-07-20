@@ -50,8 +50,7 @@ namespace _Workspace.Scripts
             TextAsset levelJson = levelJsonList[PlayerPrefsManager.Level % levelJsonList.Count];
 
             LevelJsonClass levelData = JsonUtility.FromJson<LevelJsonClass>(levelJson.text);
-
-
+            
             LevelController levelController= Instantiate(emptyLevelObject, transform);
             
             levelController.transform.SetSiblingIndex(1);
@@ -60,9 +59,9 @@ namespace _Workspace.Scripts
         
             levelData.allSingleTilesSettings.ForEach(tile =>
             {
-                SingleTile newTile = Instantiate(singleTilePrefab, tile.position, Quaternion.Euler(tile.rotation), tilePlacer);
-            
-                newTile.imageId = tile.imageId;
+                SingleTile newTile = Instantiate(singleTilePrefab, tile.anchoredPosition, Quaternion.Euler(tile.rotation), tilePlacer);
+                
+                newTile.SetTile(tile);
             
                 levelController._singleTilesList.Add(newTile);
             });
@@ -75,8 +74,9 @@ namespace _Workspace.Scripts
                 for (int i = group.tileCount-1; i >=0; i--)
                 {
                     var tileSetting = group.allTilesSettings[i];
-                    var newTile = Instantiate(singleTilePrefab, tileSetting.position, Quaternion.Euler(tileSetting.rotation), newGroup.transform);
-                    newTile.imageId = tileSetting.imageId;
+                    var newTile = Instantiate(singleTilePrefab, tileSetting.anchoredPosition, Quaternion.Euler(tileSetting.rotation), newGroup.transform);
+                    
+                    newTile.SetTile(tileSetting);
                     newGroup.allTilesList.Add(newTile);
                 }
             
@@ -103,9 +103,9 @@ namespace _Workspace.Scripts
         
             levelData.allSingleTilesSettings.ForEach(tile =>
             {
-                SingleTile newTile = Instantiate(singleTilePrefab, tile.position, Quaternion.Euler(tile.rotation), tilePlacer);
-            
-                newTile.imageId = tile.imageId;
+                SingleTile newTile = Instantiate(singleTilePrefab, tile.anchoredPosition, Quaternion.Euler(tile.rotation), tilePlacer);
+                
+                newTile.SetTile(tile);
             
                 levelController._singleTilesList.Add(newTile);
             });
@@ -118,8 +118,9 @@ namespace _Workspace.Scripts
                 for (int i = group.tileCount-1; i >=0; i--)
                 {
                     var tileSetting = group.allTilesSettings[i];
-                    var newTile = Instantiate(singleTilePrefab, tileSetting.position, Quaternion.Euler(tileSetting.rotation), newGroup.transform);
-                    newTile.imageId = tileSetting.imageId;
+                    var newTile = Instantiate(singleTilePrefab, tileSetting.anchoredPosition, Quaternion.Euler(tileSetting.rotation), newGroup.transform);
+                    
+                    newTile.SetTile(tileSetting);
                     newGroup.allTilesList.Add(newTile);
                 }
             
