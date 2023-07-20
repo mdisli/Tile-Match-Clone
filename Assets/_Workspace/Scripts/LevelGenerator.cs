@@ -47,7 +47,7 @@ namespace _Workspace.Scripts
         private void GenerateLevel()
         {
 
-            TextAsset levelJson = levelJsonList[PlayerPrefsManager.Level % levelJsonList.Count];
+            TextAsset levelJson = levelJsonList[(PlayerPrefsManager.Level-1) % levelJsonList.Count];
 
             LevelJsonClass levelData = JsonUtility.FromJson<LevelJsonClass>(levelJson.text);
             

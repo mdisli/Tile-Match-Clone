@@ -60,6 +60,10 @@ namespace _Workspace.Scripts
                 .SetEase(Ease.Linear)
                 .OnComplete(() =>
                 {
+                    wellDoneTextCanvasGroup.alpha = 0;
+                    gainedGoldCanvasGroup.alpha = 0;
+                    gainedGoldText.SetText("0");
+                    continueButtonRectTransform.localScale = Vector3.zero;
                     gameObject.SetActive(false);
                     OnNextLevelButtonClicked?.Invoke();
                 });
